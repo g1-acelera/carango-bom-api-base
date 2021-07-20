@@ -1,10 +1,8 @@
 # Java API do Carango Bom
 
-### Passos genéricos
+### Passos de configuração do projeto para rodar localmente
 
 Quando baixar o projeto, rode ```mvn clean install compile``` no terminal (ou via IDE) para gerar um arquivo **.JAR** novo na pasta **target** do projeto.
-
-### Passos de configuração do projeto para rodar localmente
 
 Baixe e instale e o PostgreSQL na sua máquina local. Tenha certeza de que o banco está rodando em localhost e na porta 5432.
 
