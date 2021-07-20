@@ -25,6 +25,10 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      # Analyze on SonarCloud
+      - run:
+          name: Analyze on SonarCloud
+          command: mvn verify sonar:sonar
 
 workflows:
   # Below is the definition of your workflow.
@@ -33,7 +37,8 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   sample: 
     jobs:
-      - build-and-test
+      - build-and-test:
+          context: SonarCloud
       - heroku/deploy-via-git:
           api-key: HEROKU_API_KEY 
           app-name: $HEROKU_APP_NAME 
