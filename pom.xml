@@ -17,6 +17,9 @@
 	<properties>
 		<java.version>11</java.version>
 		<surefire.skip>false</surefire.skip>
+        <sonar.projectKey>g1-acelera_carango-bom-api-base</sonar.projectKey>
+        <sonar.organization>g1-acelera</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<dependencies>
@@ -83,6 +86,11 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.1.0</version>
 			</plugin>
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>3.0.3</version>
+            </plugin>
 		</plugins>
 	</build>
 
