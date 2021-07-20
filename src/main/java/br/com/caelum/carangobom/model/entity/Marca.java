@@ -1,5 +1,7 @@
 package br.com.caelum.carangobom.model.entity;
 
+import br.com.caelum.carangobom.model.dto.MarcaInputDto;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
