@@ -40,7 +40,7 @@ public class MarcaController {
 
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<Marca> id(@PathVariable Long id, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Marca> id(@PathVariable Long id) {
         Optional<Marca> m1 = mr.findById(id);
         if (m1.isPresent()) {
             return ResponseEntity.ok(m1.get());
