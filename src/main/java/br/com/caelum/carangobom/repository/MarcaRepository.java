@@ -1,5 +1,6 @@
-package br.com.caelum.carangobom.marca;
+package br.com.caelum.carangobom.repository;
 
+import br.com.caelum.carangobom.model.entity.Marca;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
