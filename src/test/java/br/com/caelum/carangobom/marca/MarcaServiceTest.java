@@ -25,10 +25,8 @@ import static org.mockito.MockitoAnnotations.openMocks;
 public class MarcaServiceTest {
 
 	private MarcaService _marcaService;
-	private UriComponentsBuilder uriBuilder;
 	private MarcaInputDto marcaInput;
 	private List<Marca> marcas;
-	private static final String urlLocal = "http://localhost:8080/marcas/1";
 
 	@Mock
 	private MarcaRepository _marcaRepository;
@@ -37,7 +35,6 @@ public class MarcaServiceTest {
 	public void configuraMock() {
 		openMocks(this);
 		_marcaService = new MarcaService(_marcaRepository);
-		uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
 
 		marcaInput = new MarcaInputDto();
 		marcaInput.setNome("Audi");

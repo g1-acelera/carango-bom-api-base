@@ -44,7 +44,7 @@ public class MarcaController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<MarcaOutputDto> altera(@Valid @RequestBody MarcaInputDto marcaInput, @PathVariable Long id, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<MarcaOutputDto> altera(@Valid @RequestBody MarcaInputDto marcaInput, @PathVariable Long id) {
         return _marcaService.alterar(id, marcaInput);
     }
 
