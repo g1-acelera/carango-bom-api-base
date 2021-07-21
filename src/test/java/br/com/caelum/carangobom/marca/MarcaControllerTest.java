@@ -107,7 +107,7 @@ class MarcaControllerTest {
         when(_marcaService.alterar(1L, marcaInput))
         .thenReturn(marcaResponse);
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(marcaInput,1L);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(1L, marcaInput);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
         MarcaOutputDto marcaAlterada = resposta.getBody();
@@ -119,16 +119,10 @@ class MarcaControllerTest {
         when(_marcaService.alterar(2L, marcaInput))
         .thenReturn(ResponseEntity.notFound().build());
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(marcaInput, 2L);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(2L, marcaInput);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 
-    @Test
-    void deveResponderValidationFailedQuandoAlterarMarcaComNomeVazio() {
-        assertThrows(NullPointerException.class, () -> {
-            _marcaController.altera(new MarcaInputDto(),null);
-        });
-    }
 
     @Test
     void deveDeletarMarcaExistente() {
