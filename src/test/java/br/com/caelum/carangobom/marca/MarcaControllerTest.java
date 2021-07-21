@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -23,19 +22,20 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 class MarcaControllerTest {
 
-    private MarcaController _marcaController;
+    private MarcaController marcaController;
     private UriComponentsBuilder uriBuilder;
     private MarcaInputDto marcaInput;
     private List<Marca> marcas;
-    private static final String urlLocal = "http://localhost:8080/marcas/1";
+
+    private static final String URL_LOCAL = "http://localhost:8080/marcas/1";
 
     @Mock
-    private MarcaService _marcaService;
+    private MarcaService marcaService;
 
     @BeforeEach
     public void configuraMock() {
         openMocks(this);
-        _marcaController = new MarcaController(_marcaService);
+        marcaController = new MarcaController(marcaService);
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
         
         marcaInput = new MarcaInputDto();
@@ -52,10 +52,10 @@ class MarcaControllerTest {
     void deveRetornarListaQuandoHouverResultados() {
         List<MarcaOutputDto> marcasDto = MarcaOutputDto.convertToDto(marcas);
 
-        when(_marcaService.listar())
+        when(marcaService.listar())
             .thenReturn(marcasDto);
 
-        List<MarcaOutputDto> resultado = _marcaController.lista();
+        List<MarcaOutputDto> resultado = marcaController.lista();
         assertEquals(marcasDto, resultado);
     }
 
@@ -64,38 +64,31 @@ class MarcaControllerTest {
         MarcaOutputDto marcaOutput = new MarcaOutputDto(marcas.get(0));
         ResponseEntity<MarcaOutputDto> marcaResponse = ResponseEntity.ok(marcaOutput);
 
-        when(_marcaService.procurarPeloId(1L))
+        when(marcaService.procurarPeloId(1L))
             .thenReturn(marcaResponse);
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.procuraPeloId(1L);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.procuraPeloId(1L);
         assertEquals(marcaOutput, resposta.getBody());
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
     }
 
     @Test
     void deveRetornarNotFoundQuandoRecuperarMarcaComIdInexistente() {
-        when(_marcaService.procurarPeloId(anyLong()))
+        when(marcaService.procurarPeloId(anyLong()))
                 .thenReturn(ResponseEntity.notFound().build());
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.procuraPeloId(1L);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.procuraPeloId(1L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 
     @Test
     void deveResponderCreatedELocationQuandoCadastrarMarca() {
-        when(_marcaService.cadastrar(marcaInput))
+        when(marcaService.cadastrar(marcaInput))
                 .thenReturn(new MarcaOutputDto(new Marca(1L, marcaInput.getNome())));
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.cadastra(marcaInput, uriBuilder);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.cadastra(marcaInput, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
-        assertEquals(urlLocal, resposta.getHeaders().getLocation().toString());
-    }
-
-    @Test
-    void deveResponderValidationFailedQuandoCadastrarMarcaComNomeVazio() {
-        assertThrows(NullPointerException.class, () -> {
-            _marcaController.cadastra(new MarcaInputDto(), uriBuilder);
-        });
+        assertEquals(URL_LOCAL, resposta.getHeaders().getLocation().toString());
     }
 
     @Test
@@ -104,10 +97,10 @@ class MarcaControllerTest {
         
         ResponseEntity<MarcaOutputDto> marcaResponse = ResponseEntity.ok(new MarcaOutputDto(marca));
         
-        when(_marcaService.alterar(1L, marcaInput))
+        when(marcaService.alterar(1L, marcaInput))
         .thenReturn(marcaResponse);
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(1L, marcaInput);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.altera(1L, marcaInput);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
         MarcaOutputDto marcaAlterada = resposta.getBody();
@@ -116,13 +109,12 @@ class MarcaControllerTest {
 
     @Test
     void naoDeveAlterarMarcaInexistente() {    	
-        when(_marcaService.alterar(2L, marcaInput))
+        when(marcaService.alterar(2L, marcaInput))
         .thenReturn(ResponseEntity.notFound().build());
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(2L, marcaInput);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.altera(2L, marcaInput);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
-
 
     @Test
     void deveDeletarMarcaExistente() {
@@ -130,19 +122,19 @@ class MarcaControllerTest {
         
         ResponseEntity<MarcaOutputDto> marcaResponse = ResponseEntity.ok(new MarcaOutputDto(marca));
         
-        when(_marcaService.deletar(1L))
+        when(marcaService.deletar(1L))
         .thenReturn(marcaResponse);
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.deleta(1L);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.deleta(1L);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
     }
 
     @Test
     void naoDeveDeletarMarcaInexistente() {    	
-        when(_marcaService.deletar(2L))
+        when(marcaService.deletar(2L))
         .thenReturn(ResponseEntity.notFound().build());
         
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.deleta(2L);
+        ResponseEntity<MarcaOutputDto> resposta = marcaController.deleta(2L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 
