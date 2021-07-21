@@ -1,8 +1,8 @@
 package br.com.caelum.carangobom.marca;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.List;
@@ -57,8 +57,6 @@ public class MarcaServiceTest {
 
 	@Test
 	void deveRetornarListaQuandoHouverResultados() {
-		List<MarcaOutputDto> marcasDto = MarcaOutputDto.convertToDto(marcas);
-
 		when(_marcaRepository.findAllByOrderByNome()).thenReturn(marcas);
 
 		List<MarcaOutputDto> resultado = _marcaService.listar();
@@ -74,16 +72,7 @@ public class MarcaServiceTest {
 
 		ResponseEntity<MarcaOutputDto> resposta = _marcaService.procurarPeloId(1L);
 		assertEquals("Audi", resposta.getBody().getNome());
-		assertEquals(HttpStatus.OK, resposta.getStatusCode());
 	}
-	
-    @Test
-    void naoDeveAlterarMarcaInexistente() {    	
-    	when(_marcaRepository.findById(1L)).thenReturn(Optional.empty());
-
-        ResponseEntity<MarcaOutputDto> resposta = _marcaService.procurarPeloId(1L);
-        assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
-    }
     
     @Test
     void deveCadastrarMarca() {
@@ -108,4 +97,32 @@ public class MarcaServiceTest {
         assertEquals("Audi", marcaAlterada.getNome());
     }
 
+	@Test
+	void naoDeveAlterarMarcaInexistente() {
+		when(_marcaRepository.findById(anyLong()))
+				.thenReturn(Optional.empty());
+
+		ResponseEntity<MarcaOutputDto> resposta = _marcaService.alterar(2L, marcaInput);
+		assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
+	}
+
+	@Test
+	void deveDeletarMarcaExistente() {
+		when(_marcaRepository.findById(1L))
+				.thenReturn(Optional.of(marcas.get(1)));
+
+		ResponseEntity<MarcaOutputDto> resposta = _marcaService.deletar(1L);
+		assertEquals(HttpStatus.OK, resposta.getStatusCode());
+		verify(_marcaRepository).delete(marcas.get(1));
+	}
+
+	@Test
+	void naoDeveDeletarMarcaInexistente() {
+		when(_marcaRepository.findById(anyLong()))
+				.thenReturn(Optional.empty());
+
+		ResponseEntity<MarcaOutputDto> resposta = _marcaService.deletar(1L);
+		assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
+		verify(_marcaRepository, never()).delete(any());
+	}
 }
