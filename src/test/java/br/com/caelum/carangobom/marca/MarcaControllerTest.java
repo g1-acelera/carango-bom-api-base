@@ -1,137 +1,149 @@
 package br.com.caelum.carangobom.marca;
 
 import br.com.caelum.carangobom.controller.MarcaController;
+import br.com.caelum.carangobom.model.dto.MarcaInputDto;
+import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
 import br.com.caelum.carangobom.model.entity.Marca;
-import br.com.caelum.carangobom.repository.MarcaRepository;
+import br.com.caelum.carangobom.service.MarcaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class MarcaControllerTest {
 
-    private MarcaController marcaController;
+    private MarcaController _marcaController;
     private UriComponentsBuilder uriBuilder;
+    private MarcaInputDto marcaInput;
+    private List<Marca> marcas;
+    private static final String urlLocal = "http://localhost:8080/marcas/1";
 
     @Mock
-    private MarcaRepository marcaRepository;
+    private MarcaService _marcaService;
 
     @BeforeEach
     public void configuraMock() {
         openMocks(this);
-
-        marcaController = new MarcaController(marcaRepository);
+        _marcaController = new MarcaController(_marcaService);
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
+        
+        marcaInput = new MarcaInputDto();
+    	marcaInput.setNome("Ferrari");
+    	
+    	marcas = List.of(
+			new Marca(1L, "Audi"),
+	        new Marca(2L, "BMW"),
+	        new Marca(3L, "Fiat")
+	    );
     }
 
     @Test
     void deveRetornarListaQuandoHouverResultados() {
-        List<Marca> marcas = List.of(
-            new Marca(1L, "Audi"),
-            new Marca(2L, "BMW"),
-            new Marca(3L, "Fiat")
-        );
+        List<MarcaOutputDto> marcasDto = MarcaOutputDto.convertToDto(marcas);
 
-        when(marcaRepository.findAllByOrderByNome())
-            .thenReturn(marcas);
+        when(_marcaService.listar())
+            .thenReturn(marcasDto);
 
-        List<Marca> resultado = marcaController.lista();
-        assertEquals(marcas, resultado);
+        List<MarcaOutputDto> resultado = _marcaController.lista();
+        assertEquals(marcasDto, resultado);
     }
 
     @Test
     void deveRetornarMarcaPeloId() {
-        Marca audi = new Marca(1L, "Audi");
+        MarcaOutputDto marcaOutput = new MarcaOutputDto(marcas.get(0));
+        ResponseEntity<MarcaOutputDto> marcaResponse = ResponseEntity.ok(marcaOutput);
 
-        when(marcaRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+        when(_marcaService.procurarPeloId(1L))
+            .thenReturn(marcaResponse);
 
-        ResponseEntity<Marca> resposta = marcaController.id(1L);
-        assertEquals(audi, resposta.getBody());
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.procuraPeloId(1L);
+        assertEquals(marcaOutput, resposta.getBody());
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
     }
 
     @Test
     void deveRetornarNotFoundQuandoRecuperarMarcaComIdInexistente() {
-        when(marcaRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+        when(_marcaService.procurarPeloId(anyLong()))
+                .thenReturn(ResponseEntity.notFound().build());
 
-        ResponseEntity<Marca> resposta = marcaController.id(1L);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.procuraPeloId(1L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 
     @Test
     void deveResponderCreatedELocationQuandoCadastrarMarca() {
-        Marca nova = new Marca("Ferrari");
+        when(_marcaService.cadastrar(marcaInput))
+                .thenReturn(new MarcaOutputDto(new Marca(1L, marcaInput.getNome())));
 
-        when(marcaRepository.save(nova))
-            .then(invocation -> {
-                Marca marcaSalva = invocation.getArgument(0, Marca.class);
-                marcaSalva.setId(1L);
-
-                return marcaSalva;
-            });
-
-        ResponseEntity<Marca> resposta = marcaController.cadastra(nova, uriBuilder);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.cadastra(marcaInput, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
-        assertEquals("http://localhost:8080/marcas/1", resposta.getHeaders().getLocation().toString());
+        assertEquals(urlLocal, resposta.getHeaders().getLocation().toString());
+    }
+
+    @Test
+    void deveResponderValidationFailedQuandoCadastrarMarcaComNomeVazio() {
+        assertThrows(NullPointerException.class, () -> {
+            _marcaController.cadastra(new MarcaInputDto(), uriBuilder);
+        });
     }
 
     @Test
     void deveAlterarNomeQuandoMarcaExistir() {
-        Marca audi = new Marca(1L, "Audi");
+        Marca marca = new Marca(1L, marcaInput.getNome());
+        
+        ResponseEntity<MarcaOutputDto> marcaResponse = ResponseEntity.ok(new MarcaOutputDto(marca));
+        
+        when(_marcaService.alterar(1L, marcaInput))
+        .thenReturn(marcaResponse);
 
-        when(marcaRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
-
-        ResponseEntity<Marca> resposta = marcaController.altera(1L, new Marca(1L, "NOVA Audi"));
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(1L, marcaInput);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
-        Marca marcaAlterada = resposta.getBody();
-        assertEquals("NOVA Audi", marcaAlterada.getNome());
+        MarcaOutputDto marcaAlterada = resposta.getBody();
+        assertEquals("Ferrari", marcaAlterada.getNome());
     }
 
     @Test
-    void naoDeveAlterarMarcaInexistente() {
-        when(marcaRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+    void naoDeveAlterarMarcaInexistente() {    	
+        when(_marcaService.alterar(2L, marcaInput))
+        .thenReturn(ResponseEntity.notFound().build());
 
-        ResponseEntity<Marca> resposta = marcaController.altera(1L, new Marca(1L, "NOVA Audi"));
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(2L, marcaInput);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
+
 
     @Test
     void deveDeletarMarcaExistente() {
-        Marca audi = new Marca(1l, "Audi");
+        Marca marca = new Marca(1L, marcaInput.getNome());
+        
+        ResponseEntity<MarcaOutputDto> marcaResponse = ResponseEntity.ok(new MarcaOutputDto(marca));
+        
+        when(_marcaService.deletar(1L))
+        .thenReturn(marcaResponse);
 
-        when(marcaRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
-
-        ResponseEntity<Marca> resposta = marcaController.deleta(1L);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.deleta(1L);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
-        verify(marcaRepository).delete(audi);
     }
 
     @Test
-    void naoDeveDeletarMarcaInexistente() {
-        when(marcaRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
-
-        ResponseEntity<Marca> resposta = marcaController.deleta(1L);
+    void naoDeveDeletarMarcaInexistente() {    	
+        when(_marcaService.deletar(2L))
+        .thenReturn(ResponseEntity.notFound().build());
+        
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.deleta(2L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
-
-        verify(marcaRepository, never()).delete(any());
     }
 
 }
