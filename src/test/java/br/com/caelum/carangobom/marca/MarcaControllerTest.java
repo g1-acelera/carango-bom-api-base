@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -90,6 +92,13 @@ class MarcaControllerTest {
     }
 
     @Test
+    void deveResponderValidationFailedQuandoCadastrarMarcaComNomeVazio() {
+        assertThrows(NullPointerException.class, () -> {
+            _marcaController.cadastra(new MarcaInputDto(), uriBuilder);
+        });
+    }
+
+    @Test
     void deveAlterarNomeQuandoMarcaExistir() {
         Marca marca = new Marca(1L, marcaInput.getNome());
         
@@ -98,7 +107,7 @@ class MarcaControllerTest {
         when(_marcaService.alterar(1L, marcaInput))
         .thenReturn(marcaResponse);
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(1L, marcaInput);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(marcaInput,1L, uriBuilder);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
         MarcaOutputDto marcaAlterada = resposta.getBody();
@@ -110,8 +119,15 @@ class MarcaControllerTest {
         when(_marcaService.alterar(2L, marcaInput))
         .thenReturn(ResponseEntity.notFound().build());
 
-        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(2L, marcaInput);
+        ResponseEntity<MarcaOutputDto> resposta = _marcaController.altera(marcaInput, 2L, uriBuilder);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
+    }
+
+    @Test
+    void deveResponderValidationFailedQuandoAlterarMarcaComNomeVazio() {
+        assertThrows(NullPointerException.class, () -> {
+            _marcaController.altera(new MarcaInputDto(),null, uriBuilder);
+        });
     }
 
     @Test

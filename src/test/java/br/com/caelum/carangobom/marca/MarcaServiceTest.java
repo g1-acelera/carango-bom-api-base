@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -80,7 +81,6 @@ public class MarcaServiceTest {
         .thenReturn(Optional.of(marcas.get(1)));
 
         ResponseEntity<MarcaOutputDto> resposta = _marcaService.alterar(2L, marcaInput);
-        assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
         MarcaOutputDto marcaAlterada = resposta.getBody();
         assertEquals("Audi", marcaAlterada.getNome());
@@ -92,7 +92,7 @@ public class MarcaServiceTest {
 				.thenReturn(Optional.empty());
 
 		ResponseEntity<MarcaOutputDto> resposta = _marcaService.alterar(2L, marcaInput);
-		assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
+		assertNull(resposta.getBody());
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class MarcaServiceTest {
 				.thenReturn(Optional.of(marcas.get(1)));
 
 		ResponseEntity<MarcaOutputDto> resposta = _marcaService.deletar(1L);
-		assertEquals(HttpStatus.OK, resposta.getStatusCode());
+		assertEquals(marcas.get(1).getNome(), resposta.getBody().getNome());
 		verify(_marcaRepository).delete(marcas.get(1));
 	}
 
@@ -111,7 +111,7 @@ public class MarcaServiceTest {
 				.thenReturn(Optional.empty());
 
 		ResponseEntity<MarcaOutputDto> resposta = _marcaService.deletar(1L);
-		assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
+		assertNull(resposta.getBody());
 		verify(_marcaRepository, never()).delete(any());
 	}
 }
