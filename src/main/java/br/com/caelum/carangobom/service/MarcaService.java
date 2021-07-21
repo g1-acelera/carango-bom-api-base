@@ -15,32 +15,59 @@ import java.util.Optional;
 @Service
 public class MarcaService {
 
-	  private MarcaRepository _marcaRepository;
+	private MarcaRepository _marcaRepository;
 
-	  @Autowired
-	  public MarcaService(MarcaRepository marcaRepository){
-	  	this._marcaRepository = marcaRepository;
-	  }
+	@Autowired
+	public MarcaService(MarcaRepository marcaRepository) {
+		this._marcaRepository = marcaRepository;
+	}
 
-	  public List<MarcaOutputDto> listar() {
-	  	List<Marca> marcas = this._marcaRepository.findAllByOrderByNome();
+	public List<MarcaOutputDto> listar() {
+		List<Marca> marcas = this._marcaRepository.findAllByOrderByNome();
 		return MarcaOutputDto.convertToDto(marcas);
-	  }
+	}
 
-	  public ResponseEntity<MarcaOutputDto> procurarPeloId(Long id) {
-		  Optional<Marca> marca = _marcaRepository.findById(id);
-		  if (marca.isPresent()) {
-			  return ResponseEntity.ok(new MarcaOutputDto(marca.get()));
-		  } else {
-			  return ResponseEntity.notFound().build();
-		  }
-	  }
+	public ResponseEntity<MarcaOutputDto> procurarPeloId(Long id) {
+		Optional<Marca> marca = _marcaRepository.findById(id);
 
+		if (marca.isPresent()) {
+			return ResponseEntity.ok(new MarcaOutputDto(marca.get()));
+		}
 
-	  public MarcaOutputDto cadastrar(MarcaInputDto marcaInput) {
-	  	Marca newMarca = new Marca(marcaInput.getNome());
-	  	Marca marca = _marcaRepository.save(newMarca);
+		return ResponseEntity.notFound().build();
+	}
 
-	  	return new MarcaOutputDto(marca);
-	  }
+	public MarcaOutputDto cadastrar(MarcaInputDto marcaInput) {
+		Marca newMarca = new Marca(marcaInput.getNome());
+		Marca marca = _marcaRepository.save(newMarca);
+
+		return new MarcaOutputDto(marca);
+	}
+
+	public ResponseEntity<MarcaOutputDto> alterar(Long id, MarcaInputDto marcaInput) {
+		Optional<Marca> marca = _marcaRepository.findById(id);
+
+		if (marca.isPresent()) {
+			Marca marcaAtualizada = marca.get();
+			marcaAtualizada.setNome(marcaInput.getNome());
+
+			return ResponseEntity.ok(new MarcaOutputDto(marcaAtualizada));
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	public ResponseEntity<MarcaOutputDto> deletar(Long id) {
+		Optional<Marca> marca = _marcaRepository.findById(id);
+
+		if (marca.isPresent()) {
+			Marca marcaDeletar = marca.get();
+			_marcaRepository.delete(marcaDeletar);
+
+			return ResponseEntity.ok(new MarcaOutputDto(marcaDeletar));
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
 }

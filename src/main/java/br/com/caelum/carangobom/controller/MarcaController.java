@@ -33,49 +33,33 @@ public class MarcaController {
     }
 
     @GetMapping
-    @Transactional
-    public List<MarcaOutputDto> listar() {
+    public List<MarcaOutputDto> lista() {
         return _marcaService.listar();
     }
 
     @GetMapping("/{id}")
-    @Transactional
-    public ResponseEntity<MarcaOutputDto> procurarPeloId(@PathVariable Long id) {
+    public ResponseEntity<MarcaOutputDto> procuraPeloId(@PathVariable Long id) {
         return _marcaService.procurarPeloId(id);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<MarcaOutputDto> cadastrar(@Valid @RequestBody MarcaInputDto marcaInput, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<MarcaOutputDto> cadastra(@Valid @RequestBody MarcaInputDto marcaInput, UriComponentsBuilder uriBuilder) {
         MarcaOutputDto response = _marcaService.cadastrar(marcaInput);
         URI marcaURL = uriBuilder.path("/marcas/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(marcaURL).body(response);
     }
 
-//    @PutMapping("/{id}")
-//    @Transactional
-//    public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca m1) {
-//        Optional<Marca> m2 = mr.findById(id);
-//        if (m2.isPresent()) {
-//            Marca m3 = m2.get();
-//            m3.setNome(m1.getNome());
-//            return ResponseEntity.ok(m3);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    @Transactional
-//    public ResponseEntity<Marca> deleta(@PathVariable Long id) {
-//        Optional<Marca> m1 = mr.findById(id);
-//        if (m1.isPresent()) {
-//            Marca m2 = m1.get();
-//            mr.delete(m2);
-//            return ResponseEntity.ok(m2);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<MarcaOutputDto> altera(@PathVariable Long id, @Valid @RequestBody MarcaInputDto marcaInput) {
+        return _marcaService.alterar(id, marcaInput);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<MarcaOutputDto> deleta(@PathVariable Long id) {
+        return _marcaService.deletar(id);
+    }
    
 }
