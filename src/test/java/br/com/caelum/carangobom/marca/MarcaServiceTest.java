@@ -1,13 +1,10 @@
 package br.com.caelum.carangobom.marca;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
-
-import java.util.List;
-import java.util.Optional;
-
+import br.com.caelum.carangobom.model.dto.MarcaInputDto;
+import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
+import br.com.caelum.carangobom.model.entity.Marca;
+import br.com.caelum.carangobom.repository.MarcaRepository;
+import br.com.caelum.carangobom.service.MarcaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -16,21 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.caelum.carangobom.controller.MarcaController;
-import br.com.caelum.carangobom.model.dto.MarcaInputDto;
-import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
-import br.com.caelum.carangobom.model.entity.Marca;
-import br.com.caelum.carangobom.repository.MarcaRepository;
-import br.com.caelum.carangobom.service.MarcaService;
+import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.hamcrest.collection.IsEmptyCollection;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class MarcaServiceTest {
 

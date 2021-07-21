@@ -2,24 +2,16 @@ package br.com.caelum.carangobom.controller;
 
 import br.com.caelum.carangobom.model.dto.MarcaInputDto;
 import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
-import br.com.caelum.carangobom.model.entity.Marca;
-import br.com.caelum.carangobom.repository.MarcaRepository;
 import br.com.caelum.carangobom.service.MarcaService;
-import br.com.caelum.carangobom.util.validacao.ErroDeParametroOutputDto;
-import br.com.caelum.carangobom.util.validacao.ListaDeErrosOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/marcas")

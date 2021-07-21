@@ -4,7 +4,6 @@ import br.com.caelum.carangobom.controller.MarcaController;
 import br.com.caelum.carangobom.model.dto.MarcaInputDto;
 import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
 import br.com.caelum.carangobom.model.entity.Marca;
-import br.com.caelum.carangobom.repository.MarcaRepository;
 import br.com.caelum.carangobom.service.MarcaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class MarcaControllerTest {
