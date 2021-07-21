@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.marca;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -48,7 +50,7 @@ public class MarcaServiceTest {
 		uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
 
 		marcaInput = new MarcaInputDto();
-		marcaInput.setNome("Ferrari");
+		marcaInput.setNome("Audi");
 
 		marcas = List.of(new Marca(1L, "Audi"), new Marca(2L, "BMW"), new Marca(3L, "Fiat"));
 	}
@@ -82,4 +84,28 @@ public class MarcaServiceTest {
         ResponseEntity<MarcaOutputDto> resposta = _marcaService.procurarPeloId(1L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
+    
+    @Test
+    void deveCadastrarMarca() {
+        when(_marcaRepository.save(Mockito.any(Marca.class)))
+                .thenReturn(marcas.get(0));
+
+        MarcaOutputDto resposta = _marcaService.cadastrar(marcaInput);
+        
+        assertEquals(marcas.get(0).getId(), resposta.getId());
+        assertEquals(marcas.get(0).getNome(), resposta.getNome());
+    }
+    
+    @Test
+    void deveAlterarNomeQuandoMarcaExistir() {
+        when(_marcaRepository.findById(2L))
+        .thenReturn(Optional.of(marcas.get(1)));
+
+        ResponseEntity<MarcaOutputDto> resposta = _marcaService.alterar(2L, marcaInput);
+        assertEquals(HttpStatus.OK, resposta.getStatusCode());
+
+        MarcaOutputDto marcaAlterada = resposta.getBody();
+        assertEquals("Audi", marcaAlterada.getNome());
+    }
+
 }
