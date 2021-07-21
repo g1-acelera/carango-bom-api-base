@@ -14,20 +14,20 @@ import java.util.Optional;
 @Service
 public class MarcaService {
 
-	private MarcaRepository _marcaRepository;
+	private MarcaRepository marcaRepository;
 
 	@Autowired
 	public MarcaService(MarcaRepository marcaRepository) {
-		this._marcaRepository = marcaRepository;
+		this.marcaRepository = marcaRepository;
 	}
 
 	public List<MarcaOutputDto> listar() {
-		List<Marca> marcas = this._marcaRepository.findAllByOrderByNome();
+		List<Marca> marcas = this.marcaRepository.findAllByOrderByNome();
 		return MarcaOutputDto.convertToDto(marcas);
 	}
 
 	public ResponseEntity<MarcaOutputDto> procurarPeloId(Long id) {
-		Optional<Marca> marca = _marcaRepository.findById(id);
+		Optional<Marca> marca = marcaRepository.findById(id);
 
 		if (marca.isPresent()) {
 			return ResponseEntity.ok(new MarcaOutputDto(marca.get()));
@@ -38,13 +38,13 @@ public class MarcaService {
 
 	public MarcaOutputDto cadastrar(MarcaInputDto marcaInput) {
 		Marca newMarca = new Marca(marcaInput.getNome());
-		Marca marca = _marcaRepository.save(newMarca);
+		Marca marca = marcaRepository.save(newMarca);
 
 		return new MarcaOutputDto(marca);
 	}
 
 	public ResponseEntity<MarcaOutputDto> alterar(Long id, MarcaInputDto marcaInput) {
-		Optional<Marca> marca = _marcaRepository.findById(id);
+		Optional<Marca> marca = marcaRepository.findById(id);
 
 		if (marca.isPresent()) {
 			Marca marcaAtualizada = marca.get();
@@ -57,11 +57,11 @@ public class MarcaService {
 	}
 
 	public ResponseEntity<MarcaOutputDto> deletar(Long id) {
-		Optional<Marca> marca = _marcaRepository.findById(id);
+		Optional<Marca> marca = marcaRepository.findById(id);
 
 		if (marca.isPresent()) {
 			Marca marcaDeletar = marca.get();
-			_marcaRepository.delete(marcaDeletar);
+			marcaRepository.delete(marcaDeletar);
 
 			return ResponseEntity.ok(new MarcaOutputDto(marcaDeletar));
 		}

@@ -17,27 +17,27 @@ import java.util.List;
 @RequestMapping("/marcas")
 public class MarcaController {
 
-    private MarcaService _marcaService;
+    private MarcaService marcaService;
 
     @Autowired
     public MarcaController(MarcaService marcaService) {
-       this._marcaService = marcaService;
+       this.marcaService = marcaService;
     }
 
     @GetMapping
     public List<MarcaOutputDto> lista() {
-        return _marcaService.listar();
+        return marcaService.listar();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MarcaOutputDto> procuraPeloId(@PathVariable Long id) {
-        return _marcaService.procurarPeloId(id);
+        return marcaService.procurarPeloId(id);
     }
 
     @PostMapping
     @Transactional
     public ResponseEntity<MarcaOutputDto> cadastra(@Valid @RequestBody MarcaInputDto marcaInput, UriComponentsBuilder uriBuilder) {
-        MarcaOutputDto response = _marcaService.cadastrar(marcaInput);
+        MarcaOutputDto response = marcaService.cadastrar(marcaInput);
         URI marcaURL = uriBuilder.path("/marcas/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(marcaURL).body(response);
     }
@@ -45,13 +45,13 @@ public class MarcaController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<MarcaOutputDto> altera(@PathVariable Long id, @Valid @RequestBody MarcaInputDto marcaInput) {
-        return _marcaService.alterar(id, marcaInput);
+        return marcaService.alterar(id, marcaInput);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<MarcaOutputDto> deleta(@PathVariable Long id) {
-        return _marcaService.deletar(id);
+        return marcaService.deletar(id);
     }
    
 }
