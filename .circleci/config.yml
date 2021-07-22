@@ -8,7 +8,7 @@ orbs:
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:
-    working_directory: /tmp
+    # working_directory: /tmp
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # Be sure to update the Docker image tag below to openjdk version of your application.
@@ -23,19 +23,19 @@ jobs:
           name: Build
           command: mvn -B -DskipTests clean package
       # Create artifacts folder
-      - run:
-          name: Creating Coverage Artifacts
-          command: |
-            mkdir /tmp/artifacts;
-            echo "my coverage report file in a dir" > /tmp/artifacts/coverage_report;
+      # - run:
+      #     name: Creating Coverage Artifacts
+      #     command: |
+      #       mkdir /tmp/artifacts;
+      #       echo "my coverage report file in a dir" > /tmp/artifacts/coverage_report;
       # Then run your tests!
       - run:
           name: Test
           command: mvn test
           
       - store_artifacts:
-          path: /tmp/artifacts
-          destination: coverage_report
+          path: /targe/jacoco-reports
+          destination: index.html
       # Analyze on SonarCloud
       - run:
           name: Analyze on SonarCloud
