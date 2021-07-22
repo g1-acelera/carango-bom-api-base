@@ -25,6 +25,9 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      - store_artifacts:
+          path: /artifacts
+          destination: coverage_report
       # Analyze on SonarCloud
       - run:
           name: Analyze on SonarCloud
