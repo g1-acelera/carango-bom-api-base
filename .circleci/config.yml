@@ -34,8 +34,8 @@ jobs:
           command: mvn test
           
       - store_artifacts:
-          path: /targe/jacoco-reports
-          destination: index.html
+          path: target
+          destination: coverate_report
       # Analyze on SonarCloud
       - run:
           name: Analyze on SonarCloud
