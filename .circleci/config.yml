@@ -21,6 +21,12 @@ jobs:
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
+      # Create artifacts folder
+      - run:
+          name: Creating Coverage Artifacts
+          command: |
+            mkdir /artifacts;
+            echo "my coverage report file in a dir" > /artifacts/coverage_report;
       # Then run your tests!
       - run:
           name: Test
