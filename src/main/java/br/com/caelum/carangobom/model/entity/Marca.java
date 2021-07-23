@@ -1,14 +1,19 @@
 package br.com.caelum.carangobom.model.entity;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 @Entity
+@Table(name="marca")
 public class Marca {
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -17,6 +22,9 @@ public class Marca {
     @NotBlank
     @Size(min = 2, message = "Deve ter {min} ou mais caracteres.")
     private String nome;
+    
+    @OneToMany(mappedBy="marca")
+    private Set<Veiculo> veiculos;
 
     public Marca() {
 
