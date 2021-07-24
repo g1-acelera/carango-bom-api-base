@@ -1,10 +1,11 @@
 package br.com.caelum.carangobom.veiculo;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +54,17 @@ public class VeiculoRepositoryTest {
     }
     
     @Test
+    void deveEncontrarUmExistente() {    	
+    	var veiculo = new Veiculo("S4", 240000, 2016, audi);
+
+        repository.save(veiculo);
+        
+        var id = veiculo.getId();
+        
+        assertThat(repository.findById(id)).isPresent();
+    }
+    
+    @Test
     void deveDeletarUmExistente() {
     	Optional<Veiculo> veiculoOpcionalVazio = Optional.empty();
     	
@@ -78,6 +90,8 @@ public class VeiculoRepositoryTest {
     	repository.save(a8);
     	
     	var listaDeVeiculos = repository.findAll();
+    	
+    	assertEquals(List.of(s4, rs6, a8), listaDeVeiculos);
     }
 
 }
