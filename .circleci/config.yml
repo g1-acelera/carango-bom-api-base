@@ -30,8 +30,8 @@ jobs:
       - run:
           name: Set up DB
           command: |
-            bundle exec rake db:create:all
-            bundle exec rake db:migrate
+            bundle exec db:create:all
+            bundle exec db:migrate
 
       - run:
           name: Build
