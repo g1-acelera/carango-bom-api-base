@@ -88,7 +88,7 @@ public class VeiculoService {
 	}
 	
 	private Marca buscarMarca(Long marcaId) {
-		return marcaService.findById(marcaId).
+		return marcaService.findExistentById(marcaId).
 				orElseThrow(() -> new MarcaNotFoundException("ID de Marca é inválido"));
 	}
     
