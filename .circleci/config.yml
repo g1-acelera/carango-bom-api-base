@@ -15,14 +15,16 @@ jobs:
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
       - image: cimg/openjdk:11.0
+      - image: circleci/postgres:9.6.5-alpine-ram
+      
     steps:
       # Checkout the code as the first step.
       - checkout
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
-          command: mvn -B -DskipTests clean install compile
-          
+          command: mvn -B -DskipTests clean package
+\
       - run:
           name: Test
           command: mvn test
