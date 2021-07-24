@@ -4,24 +4,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import br.com.caelum.carangobom.exception.MarcaNotFoundException;
 import br.com.caelum.carangobom.model.dto.VeiculoInputDto;
 import br.com.caelum.carangobom.model.dto.VeiculoOutputDto;
+import br.com.caelum.carangobom.model.entity.Marca;
 import br.com.caelum.carangobom.model.entity.Veiculo;
 import br.com.caelum.carangobom.repository.VeiculoRepository;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class VeiculoService {
 
     private final VeiculoRepository repository;
-    
-    @Autowired
-	public VeiculoService(VeiculoRepository repository) {
-		this.repository = repository;
-	}
+    private final ExistentMarcaService marcaService;
 
     public ResponseEntity<VeiculoOutputDto> procurarPeloId(Long id) {
 		Optional<Veiculo> veiculo = repository.findById(id);
@@ -44,7 +43,15 @@ public class VeiculoService {
 	}
 
     public VeiculoOutputDto cadastrar(VeiculoInputDto veiculoInput) {
-		Veiculo newVeiculo = new Veiculo(veiculoInput.getNome(), veiculoInput.getValor(), veiculoInput.getAno(), veiculoInput.getMarca());
+    	var marca = buscarMarca(veiculoInput.getMarcaId());
+    	
+		Veiculo newVeiculo = new Veiculo(
+				veiculoInput.getNome(), 
+				veiculoInput.getValor(), 
+				veiculoInput.getAno(), 
+				marca
+		);
+		
 		newVeiculo = this.repository.save(newVeiculo);
 
 		return new VeiculoOutputDto(newVeiculo);
@@ -54,11 +61,12 @@ public class VeiculoService {
 		Optional<Veiculo> veiculo = this.repository.findById(id);
 
 		if (veiculo.isPresent()) {
-			Veiculo veiculoAtualizado = veiculo.get();
+			var marca = buscarMarca(veiculoInput.getMarcaId());
+			var veiculoAtualizado = veiculo.get();
 			veiculoAtualizado.setAno(veiculoInput.getAno());
 			veiculoAtualizado.setNome(veiculoInput.getNome());
 			veiculoAtualizado.setValor(veiculoInput.getValor());
-			veiculoAtualizado.setMarca(veiculoInput.getMarca());
+			veiculoAtualizado.setMarca(marca);
 
 			return ResponseEntity.ok(new VeiculoOutputDto(veiculoAtualizado));
 		}
@@ -77,6 +85,11 @@ public class VeiculoService {
 		}
 
 		return ResponseEntity.notFound().build();
+	}
+	
+	private Marca buscarMarca(Long marcaId) {
+		return marcaService.findById(marcaId).
+				orElseThrow(() -> new MarcaNotFoundException("ID de Marca é inválido"));
 	}
     
 }
