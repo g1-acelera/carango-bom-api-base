@@ -5,5 +5,5 @@ import java.util.Optional;
 import br.com.caelum.carangobom.model.entity.Marca;
 
 public interface ExistentMarcaService {
-	Optional<Marca> findById(Long id);
+	Optional<Marca> findExistentById(Long id);
 }
