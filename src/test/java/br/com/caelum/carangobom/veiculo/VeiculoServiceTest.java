@@ -91,7 +91,7 @@ class VeiculoServiceTest {
 	
 	@Test
     void deveCadastrar() {
-		when(marcaService.findById(3L))
+		when(marcaService.findExistentById(3L))
 			.thenReturn(Optional.of(FIAT));
 		
 		when(repository.save(Mockito.any(Veiculo.class)))
@@ -113,7 +113,7 @@ class VeiculoServiceTest {
 	
 	@Test
     void deveAlterarExistente() {
-		when(marcaService.findById(3L))
+		when(marcaService.findExistentById(3L))
 			.thenReturn(Optional.of(FIAT));
 		 when(repository.findById(3L))
 	        .thenReturn(Optional.of(veiculos.get(2)));
@@ -201,7 +201,7 @@ class VeiculoServiceTest {
     void deveJogarExceptionAoTentarAlterarVeiculoComMarcaInexistente() {
 	    when(repository.findById(1L))
 	    	.thenReturn(Optional.of(veiculos.get(0)));
-		when(marcaService.findById(12L))
+		when(marcaService.findExistentById(12L))
 	    	.thenReturn(Optional.empty());
 		
 		inputDto.setAno(1998);
@@ -212,6 +212,6 @@ class VeiculoServiceTest {
         assertThrows(MarcaNotFoundException.class, () -> service.alterar(1L, inputDto).getBody());
         
         then(repository).should(only()).findById(1L);
-        then(marcaService).should(only()).findById(12L);
+        then(marcaService).should(only()).findExistentById(12L);
 	}
 }
