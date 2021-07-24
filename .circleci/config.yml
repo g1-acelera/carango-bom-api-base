@@ -27,11 +27,6 @@ jobs:
       # Checkout the code as the first step.
       - checkout
       # Use mvn clean and package as the standard maven build phase
-      - run:
-          name: Set up DB
-          command: |
-            bundle exec db:create:all
-            bundle exec db:migrate
 
       - run:
           name: Build
