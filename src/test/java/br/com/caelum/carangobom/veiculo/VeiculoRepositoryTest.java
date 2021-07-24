@@ -23,7 +23,7 @@ import br.com.caelum.carangobom.repository.VeiculoRepository;
 @DataJpaTest
 @TestPropertySource(properties = {"DB_NAME=carangobom-test", "spring.jpa.hibernate.ddlAuto:create-drop"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class VeiculoRepositoryTest {
+class VeiculoRepositoryTest {
 	
 	private Marca audi;
 

@@ -5,9 +5,7 @@ import java.util.stream.Collectors;
 
 import br.com.caelum.carangobom.model.entity.Marca;
 import br.com.caelum.carangobom.model.entity.Veiculo;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class VeiculoOutputDto {

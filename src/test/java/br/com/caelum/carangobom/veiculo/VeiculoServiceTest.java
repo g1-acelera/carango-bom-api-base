@@ -209,7 +209,7 @@ class VeiculoServiceTest {
 		inputDto.setValor(6500);
 		inputDto.setMarcaId(12L);
         
-        assertThrows(MarcaNotFoundException.class, () -> service.alterar(1L, inputDto).getBody());
+        assertThrows(MarcaNotFoundException.class, () -> service.alterar(1L, inputDto));
         
         then(repository).should(only()).findById(1L);
         then(marcaService).should(only()).findExistentById(12L);

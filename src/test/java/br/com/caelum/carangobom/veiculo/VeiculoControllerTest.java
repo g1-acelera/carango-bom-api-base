@@ -22,7 +22,7 @@ import br.com.caelum.carangobom.model.entity.Marca;
 import br.com.caelum.carangobom.model.entity.Veiculo;
 import br.com.caelum.carangobom.service.VeiculoService;
 
-public class VeiculoControllerTest {
+class VeiculoControllerTest {
 	
 	private static final Marca VW = new Marca(1L, "Volkswagen");
 	private static final Marca AUDI = new Marca(2L, "Audi");
