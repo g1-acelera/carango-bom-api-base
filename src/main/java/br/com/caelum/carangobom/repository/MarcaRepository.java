@@ -6,7 +6,9 @@ import br.com.caelum.carangobom.service.ExistentMarcaService;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MarcaRepository extends CrudRepository<Marca, Long>, ExistentMarcaService {
     List<Marca> findAllByOrderByNome();
+    Optional<Marca> findExistentById(Long id);
 }
