@@ -21,14 +21,8 @@ jobs:
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
-          command: mvn -B -DskipTests clean package
-      # Create artifacts folder
-      # - run:
-      #     name: Creating Coverage Artifacts
-      #     command: |
-      #       mkdir /tmp/artifacts;
-      #       echo "my coverage report file in a dir" > /tmp/artifacts/coverage_report;
-      # Then run your tests!
+          command: mvn -B -DskipTests clean install compile
+          
       - run:
           name: Test
           command: mvn test
