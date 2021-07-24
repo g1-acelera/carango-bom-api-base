@@ -2,8 +2,11 @@ package br.com.caelum.carangobom.veiculo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -17,36 +20,47 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import br.com.caelum.carangobom.exception.MarcaNotFoundException;
 import br.com.caelum.carangobom.model.dto.VeiculoInputDto;
 import br.com.caelum.carangobom.model.dto.VeiculoOutputDto;
 import br.com.caelum.carangobom.model.entity.Marca;
 import br.com.caelum.carangobom.model.entity.Veiculo;
 import br.com.caelum.carangobom.repository.VeiculoRepository;
+import br.com.caelum.carangobom.service.ExistentMarcaService;
 import br.com.caelum.carangobom.service.VeiculoService;
 
 class VeiculoServiceTest {
 
 	private VeiculoService service;
-	private VeiculoInputDto inputDto;
 	private List<Veiculo> veiculos;
+	private static VeiculoInputDto inputDto;
 	
-	private static final Marca BMW = new Marca("BMW");
-	private static final Marca AUDI = new Marca("Audi");
-	private static final Marca FIAT = new Marca("Fiat");
+	private static final Marca BMW = new Marca(1L, "BMW");
+	private static final Marca AUDI = new Marca(2L, "Audi");
+	private static final Marca FIAT = new Marca(3L, "Fiat");
 
 	@Mock
 	private VeiculoRepository repository;
+	
+	@Mock
+	private ExistentMarcaService marcaService;
 
 	@BeforeEach
-	public void configuraMock() {
+	public void setup() {
 		openMocks(this);
-		service = new VeiculoService(repository);
-
+		service = new VeiculoService(repository, marcaService);
+		
 		inputDto = new VeiculoInputDto();
-		inputDto.setNome("Audi");
+		
+		var rs6 = new Veiculo();
+		rs6.setId(1L);
+		rs6.setNome("RS6 Avant");
+		rs6.setValor(350000.990);
+		rs6.setAno(2019);
+		rs6.setMarca(AUDI);
 
 		veiculos = List.of(
-				new Veiculo(1L, "RS6 Avant", 350000.990, 2019, AUDI), 
+				rs6, 
 				new Veiculo(2L, "M3 Competition", 549000.500, 2021, BMW), 
 				new Veiculo(3L, "Uno", 8900, 2001, FIAT)
 		);
@@ -77,8 +91,16 @@ class VeiculoServiceTest {
 	
 	@Test
     void deveCadastrar() {
+		when(marcaService.findById(3L))
+			.thenReturn(Optional.of(FIAT));
+		
 		when(repository.save(Mockito.any(Veiculo.class)))
 			.thenReturn(veiculos.get(0));
+		
+		inputDto.setNome("Palio C/ Pintura Queimada");
+		inputDto.setValor(5000);
+		inputDto.setAno(1998);
+		inputDto.setMarcaId(3L);
 
         VeiculoOutputDto resposta = service.cadastrar(inputDto);
         
@@ -91,16 +113,17 @@ class VeiculoServiceTest {
 	
 	@Test
     void deveAlterarExistente() {
+		when(marcaService.findById(3L))
+			.thenReturn(Optional.of(FIAT));
 		 when(repository.findById(3L))
 	        .thenReturn(Optional.of(veiculos.get(2)));
 		
-		var veiculoInput = new VeiculoInputDto();
-		veiculoInput.setAno(2005);
-		veiculoInput.setNome("Unão da massa");
-		veiculoInput.setValor(11000);
-		veiculoInput.setMarca(FIAT);
+		inputDto.setAno(2005);
+		inputDto.setNome("Unão da massa");
+		inputDto.setValor(11000);
+		inputDto.setMarcaId(FIAT.getId());
 
-        VeiculoOutputDto resposta = service.alterar(3L, veiculoInput).getBody();
+        VeiculoOutputDto resposta = service.alterar(3L, inputDto).getBody();
         
         assertEquals(2005, resposta.getAno());
         assertEquals(FIAT, resposta.getMarca());
@@ -110,13 +133,15 @@ class VeiculoServiceTest {
 	
 	@Test
     void naoDeveAlterarInexistente() {
-		 when(repository.findById(4L))
-	        .thenReturn(Optional.empty());
+		when(repository.findById(4L))
+	    	.thenReturn(Optional.empty());
 		
-		var veiculoInput = new VeiculoInputDto();
-		veiculoInput.setNome("Unão da massa");
+		inputDto.setNome("Unão da massa");
+		inputDto.setNome("Uno Mille EP");
+		inputDto.setValor(6500);
+		inputDto.setMarcaId(12L);
 
-        VeiculoOutputDto resposta = service.alterar(4L, veiculoInput).getBody();
+        VeiculoOutputDto resposta = service.alterar(4L, inputDto).getBody();
         
         assertNull(resposta);
 	}
@@ -170,5 +195,23 @@ class VeiculoServiceTest {
         
         assertNull(resposta);
         verify(repository, never()).delete(any());
+	}
+	
+	@Test
+    void deveJogarExceptionAoTentarAlterarVeiculoComMarcaInexistente() {
+	    when(repository.findById(1L))
+	    	.thenReturn(Optional.of(veiculos.get(0)));
+		when(marcaService.findById(12L))
+	    	.thenReturn(Optional.empty());
+		
+		inputDto.setAno(1998);
+		inputDto.setNome("Uno Mille EP");
+		inputDto.setValor(6500);
+		inputDto.setMarcaId(12L);
+        
+        assertThrows(MarcaNotFoundException.class, () -> service.alterar(1L, inputDto).getBody());
+        
+        then(repository).should(only()).findById(1L);
+        then(marcaService).should(only()).findById(12L);
 	}
 }
