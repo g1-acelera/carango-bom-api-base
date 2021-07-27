@@ -1,10 +1,12 @@
 package br.com.caelum.carangobom.marca;
 
-import br.com.caelum.carangobom.controller.MarcaController;
-import br.com.caelum.carangobom.model.dto.MarcaInputDto;
-import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
-import br.com.caelum.carangobom.model.entity.Marca;
-import br.com.caelum.carangobom.service.MarcaService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -12,13 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
+import br.com.caelum.carangobom.controller.MarcaController;
+import br.com.caelum.carangobom.model.dto.MarcaInputDto;
+import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
+import br.com.caelum.carangobom.model.entity.Marca;
+import br.com.caelum.carangobom.service.MarcaService;
 
 class MarcaControllerTest {
 
