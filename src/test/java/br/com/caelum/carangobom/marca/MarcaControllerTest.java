@@ -14,8 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -26,9 +26,8 @@ class MarcaControllerTest {
     private UriComponentsBuilder uriBuilder;
     private MarcaInputDto marcaInput;
     private List<Marca> marcas;
-
     private static final String URL_LOCAL = "http://localhost:8080/marcas/1";
-
+    
     @Mock
     private MarcaService marcaService;
 
@@ -137,5 +136,4 @@ class MarcaControllerTest {
         ResponseEntity<MarcaOutputDto> resposta = marcaController.deleta(2L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
-
 }

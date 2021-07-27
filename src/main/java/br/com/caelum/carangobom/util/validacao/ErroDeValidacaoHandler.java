@@ -22,7 +22,6 @@ public class ErroDeValidacaoHandler {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ListaDeErrosOutputDto handle(MethodArgumentNotValidException exception) {
-		ListaDeErrosOutputDto errosInformacao = new ListaDeErrosOutputDto();
 		List<ErroDeParametroOutputDto> listaDeErros = new ArrayList<>();
 		
 		List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
@@ -33,8 +32,7 @@ public class ErroDeValidacaoHandler {
 			listaDeErros.add(erro);
 		});
 		
-		errosInformacao.setErros(listaDeErros);
-        return errosInformacao;
+        return new ListaDeErrosOutputDto(listaDeErros);
 	}
 	
 }
