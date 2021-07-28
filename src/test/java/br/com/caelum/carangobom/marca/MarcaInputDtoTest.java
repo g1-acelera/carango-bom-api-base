@@ -14,7 +14,7 @@ import br.com.caelum.carangobom.model.dto.MarcaInputDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MarcaInputDtoTest {
+class MarcaInputDtoTest {
 	private static final String MINIMO_TAMANHO_NOME = "Deve ter 2 ou mais caracteres.";
 	private static final String PREENCHER_NOME = "Deve ser preenchido.";
 	
@@ -33,7 +33,7 @@ public class MarcaInputDtoTest {
     	
     	Set<ConstraintViolation<MarcaInputDto>> violations = validator.validate(marca);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.size() == 1);
+        assertEquals(1,violations.size());
         
         for (ConstraintViolation<MarcaInputDto> cv : violations) {
 			assertEquals(MINIMO_TAMANHO_NOME, cv.getMessage());
@@ -49,7 +49,7 @@ public class MarcaInputDtoTest {
     	
     	Set<ConstraintViolation<MarcaInputDto>> violations = validator.validate(marca);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.size() == 2);
+        assertEquals(2,violations.size());
         
         for (ConstraintViolation<MarcaInputDto> cv : violations) {
         	String mensagem = cv.getMessage();
