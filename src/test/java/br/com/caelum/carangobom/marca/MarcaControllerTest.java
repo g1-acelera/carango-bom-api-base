@@ -26,9 +26,8 @@ class MarcaControllerTest {
     private UriComponentsBuilder uriBuilder;
     private MarcaInputDto marcaInput;
     private List<Marca> marcas;
-
     private static final String URL_LOCAL = "http://localhost:8080/marcas/1";
-
+    
     @Mock
     private MarcaService marcaService;
 
@@ -137,5 +136,4 @@ class MarcaControllerTest {
         ResponseEntity<MarcaOutputDto> resposta = marcaController.deleta(2L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
-
 }
