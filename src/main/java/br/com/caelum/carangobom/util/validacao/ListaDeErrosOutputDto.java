@@ -6,15 +6,12 @@ public class ListaDeErrosOutputDto {
 
     private List<ErroDeParametroOutputDto> erros;
 
-    public int getQuantidadeDeErros() {
+    public ListaDeErrosOutputDto(List<ErroDeParametroOutputDto> erros) {
+		super();
+		this.erros = erros;
+	}
+
+	public int getQuantidadeDeErros() {
         return erros.size();
-    }
-
-    public List<ErroDeParametroOutputDto> getErros() {
-        return erros;
-    }
-
-    public void setErros(List<ErroDeParametroOutputDto> erros) {
-        this.erros = erros;
     }
 }
