@@ -27,7 +27,6 @@ public class AutenticacaoController {
 	}
 
 	@PostMapping
-	@Transactional
 	public ResponseEntity<TokenDto> autenticar(@Valid @RequestBody LoginDto loginInformacoes) {
 		return tokenService.realizarLogin(loginInformacoes);
 	}
