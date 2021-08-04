@@ -43,7 +43,7 @@ public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
 		Long idUsuario = tokenService.getIdUsuario(token);
 		Optional<Usuario> usuarioBanco = repository.findById(idUsuario);
 		if (usuarioBanco.isPresent()) {
-			Usuario usuario = repository.findById(idUsuario).get();
+			Usuario usuario = usuarioBanco.get();
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
