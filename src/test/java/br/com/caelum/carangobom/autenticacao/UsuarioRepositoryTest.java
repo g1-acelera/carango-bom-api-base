@@ -35,14 +35,14 @@ class UsuarioRepositoryTest {
     }
 
 	@Test
-	public void deveriaCarregarUmUsuarioAoBuscarPeloEmail() {
+	void deveriaCarregarUmUsuarioAoBuscarPeloEmail() {
 		Usuario usuario = usuarioLogin = new Usuario("teste@teste", "senha");
 		Optional<Usuario> usuarioBanco = repository.findByEmail(usuario.getEmail());
 		assertThat(usuarioBanco).isPresent();
 	}
 	
 	@Test
-	public void naoDeveriaCarregarUmUsuarioCujoEmailNaoEstejaCadastrado() {
+	void naoDeveriaCarregarUmUsuarioCujoEmailNaoEstejaCadastrado() {
 		Usuario usuario = usuarioLogin = new Usuario("teste2@teste", "senha");
 		Optional<Usuario> usuarioBanco = repository.findByEmail(usuario.getEmail());
 		assertThat(usuarioBanco).isEmpty();

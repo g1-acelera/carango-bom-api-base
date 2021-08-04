@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.model.entity;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -94,8 +95,7 @@ public class Usuario implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList(); 
 	}
 
 	@Override

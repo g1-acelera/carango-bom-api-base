@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TokenService {
 	
-	private final String TIPO_TOKEN = "Bearer";
+	private static final String TIPOTOKEN = "Bearer";
 	
 	@Value("${jwt.expiration}")
 	private String expiration;
@@ -71,7 +71,7 @@ public class TokenService {
 		try {
 			Authentication authentication = authManager.authenticate(dadosLogin);
 			String token = gerarToken(authentication);
-			return ResponseEntity.ok(new TokenDto(token, TIPO_TOKEN));
+			return ResponseEntity.ok(new TokenDto(token, TIPOTOKEN));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}
