@@ -1,12 +1,6 @@
 package br.com.caelum.carangobom.veiculo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,25 +32,10 @@ class VeiculoRepositoryTest {
     	audi = new Marca("Audi");
     	entityManager.persist(audi);
     }
-
-    @Test
-    void deveSalvarUmNovo() {
-        var veiculo = new Veiculo("S4", 240000, 2016, audi);
-
-        assertNull(veiculo.getId());
-
-        repository.save(veiculo);
-
-        assertNotNull(veiculo.getId());
-
-        assertEquals("S4", veiculo.getNome());
-        assertEquals(audi, veiculo.getMarca());
-    }
     
     @Test
     void deveEncontrarUmExistente() {    	
     	var veiculo = new Veiculo("S4", 240000, 2016, audi);
-
         repository.save(veiculo);
         
         var id = veiculo.getId();
@@ -65,33 +44,13 @@ class VeiculoRepositoryTest {
     }
     
     @Test
-    void deveDeletarUmExistente() {
-    	Optional<Veiculo> veiculoOpcionalVazio = Optional.empty();
-    	
+    void nãoEncontraNenhumVeiculoExistente() {    	
     	var veiculo = new Veiculo("S4", 240000, 2016, audi);
-
         repository.save(veiculo);
         
-        var idDoVeiculo = veiculo.getId();
+        var id = 4L;
         
-        repository.delete(veiculo);
-
-        assertEquals(veiculoOpcionalVazio, repository.findById(idDoVeiculo));
+        assertThat(repository.findById(id)).isEmpty();
     }
-    
-    @Test
-    void deveListarTodosOsExistentes() {
-    	var s4 = new Veiculo("S4", 240000, 2016, audi);
-    	var rs6 = new Veiculo("RS6",300000, 2018, audi);
-    	var a8 = new Veiculo("A8", 80000, 2014, audi);
-    	
-    	repository.save(s4);
-    	repository.save(rs6);
-    	repository.save(a8);
-    	
-    	var listaDeVeiculos = repository.findAll();
-    	
-    	assertEquals(List.of(s4, rs6, a8), listaDeVeiculos);
-    }
-
+   
 }
