@@ -18,7 +18,7 @@ public class UsuarioService implements UserDetailsService {
 	@Autowired
 	private UsuarioRepository repository;
 	
-	private final String MSG_ERRO_USUARIO = "Dados inválidos!";
+	private static final String MSGERROUSUARIO = "Dados inválidos!";
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,7 +27,7 @@ public class UsuarioService implements UserDetailsService {
 			return usuario.get();
 		}
 		
-		throw new UsernameNotFoundException(MSG_ERRO_USUARIO);
+		throw new UsernameNotFoundException(MSGERROUSUARIO);
 	}
 
 }
