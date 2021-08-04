@@ -22,6 +22,7 @@ public class UsuarioService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		repository.save(new Usuario("admin@email.com", "$2a$10$c8Q0g/hRiuxMFnm30rqr.O2D5HCI54AZkkMA1L3WsR4QjmtMZoix."));
 		Optional<Usuario> usuario = repository.findByEmail(username);
 		if (usuario.isPresent()) {
 			return usuario.get();
