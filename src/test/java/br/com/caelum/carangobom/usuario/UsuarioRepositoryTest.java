@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.autenticacao;
+package br.com.caelum.carangobom.usuario;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;

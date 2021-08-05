@@ -14,4 +14,9 @@ public class ListaDeErrosOutputDto {
 	public int getQuantidadeDeErros() {
         return erros.size();
     }
+
+	public List<ErroDeParametroOutputDto> getErros() {
+		return erros;
+	}
+	
 }
