@@ -58,6 +58,14 @@ class MarcaServiceTest {
 		ResponseEntity<MarcaOutputDto> resposta = marcaService.procurarPeloId(1L);
 		assertEquals("Audi", resposta.getBody().getNome());
 	}
+	
+	@Test
+	void naoEncontraMarcaPeloId() {
+		when(marcaRepository.findById(1L)).thenReturn(Optional.empty());
+
+		ResponseEntity<MarcaOutputDto> resposta = marcaService.procurarPeloId(1L);
+		assertNull(resposta.getBody());
+	}
     
     @Test
     void deveCadastrarMarca() {

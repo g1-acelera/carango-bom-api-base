@@ -4,6 +4,8 @@ import br.com.caelum.carangobom.model.dto.MarcaInputDto;
 import br.com.caelum.carangobom.model.dto.MarcaOutputDto;
 import br.com.caelum.carangobom.service.MarcaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class MarcaController {
     }
 
     @GetMapping
+    @Cacheable(value = "listaMarcas")
     public List<MarcaOutputDto> lista() {
         return marcaService.listar();
     }
@@ -36,6 +39,7 @@ public class MarcaController {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = "listaMarcas", allEntries = true)
     public ResponseEntity<MarcaOutputDto> cadastra(@Valid @RequestBody MarcaInputDto marcaInput, UriComponentsBuilder uriBuilder) {
         MarcaOutputDto response = marcaService.cadastrar(marcaInput);
         URI marcaURL = uriBuilder.path("/marcas/{id}").buildAndExpand(response.getId()).toUri();
@@ -44,12 +48,14 @@ public class MarcaController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaMarcas", allEntries = true)
     public ResponseEntity<MarcaOutputDto> altera(@PathVariable Long id, @Valid @RequestBody MarcaInputDto marcaInput) {
         return marcaService.alterar(id, marcaInput);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listaMarcas", allEntries = true)
     public ResponseEntity<MarcaOutputDto> deleta(@PathVariable Long id) {
         return marcaService.deletar(id);
     }
