@@ -13,8 +13,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
         	.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
-        	.allowedOrigins("https://carango-bom-base-theta.vercel.app")
-        	.allowedOrigins("http://localhost:3000")
+        	.allowedOrigins("https://carango-bom-base-theta.vercel.app", "http://localhost:3000")
         	.allowedHeaders("*");
     }
 }
