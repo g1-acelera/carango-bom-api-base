@@ -55,7 +55,7 @@ public class VeiculoController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    @CacheEvict(value = "listaDeVeiculos", allEntries = true)
+    @CacheEvict(value = "listaVeiculos", allEntries = true)
     public ResponseEntity<VeiculoOutputDto> deletar(@PathVariable Long id) {
         return veiculoService.deletar(id);
     }
