@@ -18,6 +18,37 @@ class UsuarioTest {
 	}
 	
 	
+	@SuppressWarnings("unlikely-arg-type")
+	@Test
+    void verificarIgualdade() {
+		Usuario usuario = new Usuario();
+		Usuario usuario2 = new Usuario(2L, "teste@email.com", "teste");
+		
+		boolean responseEquals = usuario.equals(usuario2);
+		assertFalse(responseEquals);
+		
+		usuario.setId(1L);
+		
+		responseEquals = usuario.equals(usuario);
+		assertTrue(responseEquals);
+		
+		responseEquals = usuario.equals(null);
+		assertFalse(responseEquals);
+		
+		UsuarioOutputDto usuarioInput = new UsuarioOutputDto(usuario);
+		responseEquals = usuario.equals(usuarioInput);
+		assertFalse(responseEquals);
+		
+		responseEquals = usuario.equals(usuario2);
+		assertFalse(responseEquals);
+		
+		usuario.setId(2L);
+		usuario.setEmail("teste@email.com");
+		usuario.setSenha("teste");
+		responseEquals = usuario.equals(usuario2);
+		assertTrue(responseEquals);
+    }
+	
 	@Test
     void verificarRetornoSenha() {
 		Usuario usuario = new Usuario(1L, "teste@email.com", "teste");
